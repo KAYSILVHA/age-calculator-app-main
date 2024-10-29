@@ -1,13 +1,215 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-br">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!-- displays site properly based on user's device -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calculadora de Idade</title>
 
-  <link rel="icon" type="image/png" sizes="32x32" href="./assets/images/favicon-32x32.png">
-  <title>Frontend Mentor | Age calculator app</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background-color: #f0f0f0;
+      font-family: Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background-color: white;
+      border-radius: 15px 15px 100px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      width: 500px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      padding: 40px;
+    }
+
+    .div-container-input {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      width: 100%;
+    }
+
+    .input-container input {
+      padding: 10px;
+      margin-top: 5px;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+      width: 100px;
+    }
+
+    .input-container label {
+      font-weight: bold;
+      display: block;
+    }
+
+    .error-message {
+      color: red;
+      font-size: 10px;
+      margin-bottom: 5px;
+    }
+
+    .result {
+      margin-top: 20px;
+      font-size: 30px;
+      font-weight: bold;
+      align-self: start;
+    }
+
+    .result span {
+      color: #7d4dfb;
+    }
+
+    .arrow-icon {
+      width: 50px;
+      height: 50px;
+      background-color: #7d4dfb;
+      color: white;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      margin-left: 10px;
+      margin-top: 10px;
+      align-self: flex-end;
+    }
+
+    .arrow-icon:hover {
+      background-color: #444;
+    }
+
+    @media screen and (max-width: 667px) {
+      .container {
+        width: 90vw;
+      }
+
+      .div-container-input {
+        width: 90vw;
+        flex-direction: column;
+      }
+
+      .div-container-input,
+      .input-container {
+        width: 100%;
+      }
+
+      .input-container input {
+        width: 100%;
+      }
+
+      h1 {
+        font-size: 2rem;
+      }
+    }
+  </style>
 </head>
+
 <body>
 
+  <div class="container text-center">
+    <div class="div-container-input">
+      <div class="input-container">
+        <div id="error-day" class="error-message"></div>
+        <label for="day">Dia</label>
+        <input type="number" id="day" placeholder="DD" min="1" max="31">
+      </div>
+      <div class="input-container">
+        <div id="error-month" class="error-message"></div>
+        <label for="month">Mês</label>
+        <input type="number" id="month" placeholder="MM" min="1" max="12">
+      </div>
+      <div class="input-container">
+        <div id="error-year" class="error-message"></div>
+        <label for="year">Ano</label>
+        <input type="number" id="year" placeholder="YYYY" min="1900" max="2024">
+      </div>
+    </div>
+
+    <div class="arrow-icon" onclick="calculateAge()">
+      &#8681;
+    </div>
+
+    <div class="result" id="result">
+      <h1><span id="years">--</span> anos</h1>
+      <h1><span id="months">--</span> meses</h1>
+      <h1><span id="days">--</span> dias</h1>
+    </div>
+  </div>
+
+  <script>
+    function calculateAge() {
+      const day = document.getElementById('day').value;
+      const month = document.getElementById('month').value;
+      const year = document.getElementById('year').value;
+
+      const errorDay = document.getElementById('error-day');
+      const errorMonth = document.getElementById('error-month');
+      const errorYear = document.getElementById('error-year');
+
+      let hasError = false;
+
+      errorDay.textContent = '';
+      errorMonth.textContent = '';
+      errorYear.textContent = '';
+
+      const currentDate = new Date();
+      const currentYear = currentDate.getFullYear();
+
+      if (!day || day < 1 || day > 31) {
+        errorDay.textContent = 'Dia inválido.';
+        hasError = true;
+      }
+
+      if (!month || month < 1 || month > 12) {
+        errorMonth.textContent = 'Mês inválido.';
+        hasError = true;
+      }
+
+      if (!year || year < 1900 || year > currentYear) {
+        errorYear.textContent = 'Ano inválido.';
+        hasError = true;
+      }
+
+      if (hasError) return;
+
+      const birthDate = new Date(year, month - 1, day);
+
+      if (birthDate > currentDate) {
+        errorDay.textContent = 'Data não pode estar no futuro.';
+        return;
+      }
+
+      let diffYears = currentDate.getFullYear() - birthDate.getFullYear();
+      let diffMonths = currentDate.getMonth() - birthDate.getMonth();
+      let diffDays = currentDate.getDate() - birthDate.getDate();
+
+      if (diffDays < 0) {
+        diffMonths--;
+        diffDays += 30;
+      }
+      if (diffMonths < 0) {
+        diffMonths += 12;
+        diffYears--;
+      }
+
+      document.getElementById('years').textContent = diffYears;
+      document.getElementById('months').textContent = diffMonths;
+      document.getElementById('days').textContent = diffDays;
+    }
+  </script>
+
 </body>
+
 </html>
